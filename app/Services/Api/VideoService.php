@@ -3,6 +3,7 @@
 namespace App\Services\Api;
 
 use Illuminate\Support\Facades\Log;
+use App\Jobs\ProcessVideo;
 
 class VideoService
 {
@@ -22,6 +23,14 @@ class VideoService
     }
 
     public function addTextToVideo($text, $start, $end, $position, $fontPath, $size, $color, $videoPath = null)
+    {
+        // Dispatch the job to the queue
+        ProcessVideo::dispatch($this->employeeId, $text, $start, $end, $position, $fontPath, $size, $color, $videoPath);
+
+        return ['status' => 202, 'message' => 'Video processing job has been queued'];
+    }
+
+    public function processVideo($text, $start, $end, $position, $fontPath, $size, $color, $videoPath = null)
     {
         $x = $position[0];
         $y = $position[1];

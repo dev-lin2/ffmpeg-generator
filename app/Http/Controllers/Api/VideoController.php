@@ -25,7 +25,7 @@ class VideoController extends Controller
 
         $this->videoService->setOutputPath($request->employee_id);
 
-        $video = $this->videoService->addTextToVideo(
+        $this->videoService->addTextToVideo(
             "{$name}",
             0.5,
             3.5,
@@ -35,26 +35,18 @@ class VideoController extends Controller
             'white'
         );
 
-        if ($video['status'] !== 200) {
-            return response()->json($video, 400);
-        }
-
-        $video = $this->videoService->addTextToVideo(
+        $this->videoService->addTextToVideo(
             "{$wish1}",
-            3.5,
+            3.8,
             7.5,
             [1100, 200],
             $font,
             50,
             'white',
-            $video['output_path']
+            public_path("videos/{$request->employee_id}.mp4")
         );
 
-        if ($video['status'] !== 200) {
-            return response()->json($video, 400);
-        }
-
-        $video = $this->videoService->addTextToVideo(
+        $this->videoService->addTextToVideo(
             "{$wish2}",
             8,
             12,
@@ -62,16 +54,16 @@ class VideoController extends Controller
             $font,
             50,
             'white',
-            $video['output_path']
+            public_path("videos/{$request->employee_id}.mp4")
         );
 
         return response()->json(
             [
-                'status' => 200,
-                'message' => 'Video generated successfully',
-                'video_path' => url('public/videos/' . $request->employee_id . '.mp4')
+                'status' => 202,
+                'message' => 'Video generation jobs have been queued',
+                'expected_video_path' => url('public/videos/' . $request->employee_id . '.mp4')
             ],
-            200
+            202
         );
     }
 }
