@@ -32,6 +32,17 @@ class VideoService
 
     public function processVideo($text, $start, $end, $position, $fontPath, $size, $color, $videoPath = null)
     {
+        Log::info("Starting video processing", [
+            'text' => $text,
+            'start' => $start,
+            'end' => $end,
+            'position' => $position,
+            'fontPath' => $fontPath,
+            'size' => $size,
+            'color' => $color,
+            'videoPath' => $videoPath
+        ]);
+
         $x = $position[0];
         $y = $position[1];
         $startTime = $start;
@@ -54,13 +65,26 @@ class VideoService
             $fadeDuration = 1; // Duration of fade-in effect in seconds
             $command = "ffmpeg -i {$inputPath} -vf \"drawtext=fontfile={$fontPath}:text='{$line}':fontsize={$size}:fontcolor={$color}:x={$x}:y={$y}:alpha='if(lt(t,{$startTime}),0,if(lt(t,{$startTime}+{$fadeDuration}),(t-{$startTime})/{$fadeDuration},1))*between(t,{$startTime},{$endTime})'\" -c:a copy {$outputPath} -y";
 
-            Log::info("Executing command: {$command}");
+            Log::info("Executing FFmpeg command", ['command' => $command]);
 
-            exec($command, $output, $status);
+            exec($command . " 2>&1", $output, $status);
+            
+            Log::info("FFmpeg command output", ['output' => $output]);
+
             if ($status !== 0) {
                 $this->cleanupTempFiles($tempFiles);
-                Log::error("Failed to add text to video: " . implode("\n", $output));
-                return ['status' => 500, 'message' => 'Failed to add text to video'];
+                Log::error("Failed to add text to video", [
+                    'status' => $status,
+                    'output' => $output,
+                    'command' => $command
+                ]);
+                return ['status' => 500, 'message' => 'Failed to add text to video', 'error' => implode("\n", $output)];
+            }
+
+            // Check if the output file was created
+            if (!file_exists($outputPath)) {
+                Log::error("Output file was not created", ['outputPath' => $outputPath]);
+                return ['status' => 500, 'message' => 'Output file was not created', 'outputPath' => $outputPath];
             }
 
             // Update input path for next iteration
@@ -74,10 +98,18 @@ class VideoService
         }
 
         // Rename the last temp file to the final output file
-        rename(end($tempFiles), $this->outputPath);
+        if (!rename(end($tempFiles), $this->outputPath)) {
+            Log::error("Failed to rename final output file", [
+                'from' => end($tempFiles),
+                'to' => $this->outputPath
+            ]);
+            return ['status' => 500, 'message' => 'Failed to rename final output file'];
+        }
 
         // Clean up temporary files
         $this->cleanupTempFiles($tempFiles);
+
+        Log::info("Video processing completed successfully", ['outputPath' => $this->outputPath]);
 
         return ['status' => 200, 'message' => 'Text added to video successfully', 'output_path' => $this->outputPath];
     }
@@ -94,7 +126,9 @@ class VideoService
     {
         foreach ($files as $file) {
             if (file_exists($file)) {
-                unlink($file);
+                if (!unlink($file)) {
+                    Log::warning("Failed to delete temporary file", ['file' => $file]);
+                }
             }
         }
     }

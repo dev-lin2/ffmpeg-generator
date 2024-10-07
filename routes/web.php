@@ -14,4 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/generate-video', [VideoController::class , 'generateVideo'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::get("/", function () {
+    return "Playground!";
+});
+
+Route::post('/generate-video', [VideoController::class, 'generateVideo'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);

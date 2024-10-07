@@ -37,7 +37,7 @@ class VideoController extends Controller
 
         $this->videoService->addTextToVideo(
             "{$wish1}",
-            3.8,
+            4,
             7.5,
             [1100, 200],
             $font,
