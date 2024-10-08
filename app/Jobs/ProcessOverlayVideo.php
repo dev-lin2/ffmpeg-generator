@@ -9,49 +9,37 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Services\Api\VideoService;
 
-class ProcessVideo implements ShouldQueue
+class ProcessOverlayVideo implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $employeeId;
-    protected $text;
+    protected $videoPath;
     protected $start;
     protected $end;
     protected $position;
-    protected $fontPath;
-    protected $size;
-    protected $color;
-    protected $charDelay;
-    protected $videoPath;
+    protected $overlayVideoPath;
 
-    public function __construct($employeeId, $text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null)
+    public function __construct($employeeId, $videoPath, $start, $end, $position, $overlayVideoPath)
     {
         $this->employeeId = $employeeId;
-        $this->text = $text;
+        $this->videoPath = $videoPath;
         $this->start = $start;
         $this->end = $end;
         $this->position = $position;
-        $this->fontPath = $fontPath;
-        $this->size = $size;
-        $this->color = $color;
-        $this->charDelay = $charDelay;
-        $this->videoPath = $videoPath;
+        $this->overlayVideoPath = $overlayVideoPath;
     }
 
     public function handle()
     {
         $videoService = new VideoService();
         $videoService->setOutputPath($this->employeeId);
-        $videoService->processVideo(
-            $this->text,
+        $videoService->processOverlayVideo(
+            $this->videoPath,
             $this->start,
             $this->end,
             $this->position,
-            $this->fontPath,
-            $this->size,
-            $this->color,
-            $this->charDelay,
-            $this->videoPath
+            $this->overlayVideoPath
         );
     }
 }

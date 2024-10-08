@@ -9,6 +9,7 @@ use App\Services\Api\VideoService;
 class VideoController extends Controller
 {
     public $videoService;
+    public $url = "http://testlab.cfd/video-generator";
 
     public function __construct(VideoService $videoService)
     {
@@ -22,6 +23,7 @@ class VideoController extends Controller
         $wish2 = $request->wish2;
 
         $font = public_path('FUTENE.ttf');
+        $overlayVideo = public_path('overlay.mp4');
 
         $this->videoService->setOutputPath($request->employee_id);
 
@@ -32,7 +34,8 @@ class VideoController extends Controller
             [720, 100],
             $font,
             50,
-            'white'
+            'white',
+            0.1
         );
 
         $this->videoService->addTextToVideo(
@@ -41,8 +44,9 @@ class VideoController extends Controller
             7.5,
             [1100, 200],
             $font,
-            50,
+            72,
             'white',
+            0.1,
             public_path("videos/{$request->employee_id}.mp4")
         );
 
@@ -52,16 +56,25 @@ class VideoController extends Controller
             12,
             [1100, 200],
             $font,
-            50,
+            72,
             'white',
+            0.1,
             public_path("videos/{$request->employee_id}.mp4")
+        );
+
+        $this->videoService->addVideoToVideo(
+            public_path("videos/{$request->employee_id}.mp4"),
+            4,
+            11,
+            [1100, 700],
+            $overlayVideo
         );
 
         return response()->json(
             [
                 'status' => 202,
                 'message' => 'Video generation jobs have been queued',
-                'expected_video_path' => url('public/videos/' . $request->employee_id . '.mp4')
+                'expected_video_path' => "{$this->url}/videos/{$request->employee_id}.mp4"
             ],
             202
         );
