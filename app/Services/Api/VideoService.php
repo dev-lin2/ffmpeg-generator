@@ -58,15 +58,30 @@ class VideoService
 
         foreach ($lines as $index => $line) {
             $line = $this->escapeString($line);
+            $size = mb_strlen($line);
+            $drawtext = "";
 
             $outputPath = str_replace('.mp4', "_{$index}.mp4", $this->outputPath);
             $tempFiles[] = $outputPath;
 
             $fadeDuration = 1; // Duration of fade-in effect in seconds
-            $command = "ffmpeg -i {$inputPath} -vf \"drawtext=fontfile={$fontPath}:text='{$line}':fontsize={$size}:fontcolor={$color}:x={$x}:y={$y}:alpha='if(lt(t,{$startTime}),0,if(lt(t,{$startTime}+{$fadeDuration}),(t-{$startTime})/{$fadeDuration},1))*between(t,{$startTime},{$endTime})'\" -c:a copy {$outputPath} -y";
+
+            for ($i = 0; $i < $size; $i++) {
+                $char = mb_substr($line, $i, 1);
+                $x += 50;
+                $startTime += 0.03;
+                $drawtext .= "drawtext=text='$char':fontfile='D\\:/Site/Practice/birthday-video/storage/app/public/fonts/FUTENE.ttf':fontsize={$size}:fontcolor={$color}:x=$x:y=$y:enable='between(t,$startTime,$endTime)'";
+                if ($i != $size - 1) {
+                    $drawtext .= ", ";
+                }
+            }
+
+            // $command = "ffmpeg -i {$inputPath} -vf \"drawtext=fontfile={$fontPath}:text='{$line}':fontsize={$size}:fontcolor={$color}:x={$x}:y={$y}:alpha='if(lt(t,{$startTime}),0,if(lt(t,{$startTime}+{$fadeDuration}),(t-{$startTime})/{$fadeDuration},1))*between(t,{$startTime},{$endTime})'\" -c:a copy {$outputPath} -y";
+
+            $command = "ffmpeg -y -i {$inputPath} -vf \"$drawtext\" -codec:a copy {$outputPath}";
+            // exec($command, $output, $return_var);
 
             Log::info("Executing FFmpeg command", ['command' => $command]);
-
             exec($command . " 2>&1", $output, $status);
             
             Log::info("FFmpeg command output", ['output' => $output]);
