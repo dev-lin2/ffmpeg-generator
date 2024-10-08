@@ -34,6 +34,7 @@ class VideoService
     public function processVideo($text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null)
     {
         Log::info("Starting video processing", [
+            'employeeId' => $this->employeeId,
             'text' => $text,
             'start' => $start,
             'end' => $end,
@@ -81,14 +82,21 @@ class VideoService
 
             $command = "ffmpeg -y -i {$inputPath} -vf \"$drawtext\" -codec:a copy {$outputPath}";
 
-            Log::info("Executing FFmpeg command", ['command' => $command]);
+            Log::info("Executing FFmpeg command", [
+                'employeeId' => $this->employeeId,
+                'command' => $command
+            ]);
             exec($command . " 2>&1", $output, $status);
 
-            Log::info("FFmpeg command output", ['output' => $output]);
+            Log::info("FFmpeg command output", [
+                'employeeId' => $this->employeeId,
+                'output' => $output
+            ]);
 
             if ($status !== 0) {
                 $this->cleanupTempFiles($tempFiles);
                 Log::error("Failed to add text to video", [
+                    'employeeId' => $this->employeeId,
                     'status' => $status,
                     'output' => $output,
                     'command' => $command
@@ -97,7 +105,10 @@ class VideoService
             }
 
             if (!file_exists($outputPath)) {
-                Log::error("Output file was not created", ['outputPath' => $outputPath]);
+                Log::error("Output file was not created", [
+                    'employeeId' => $this->employeeId,
+                    'outputPath' => $outputPath
+                ]);
                 return ['status' => 500, 'message' => 'Output file was not created', 'outputPath' => $outputPath];
             }
 
@@ -108,6 +119,7 @@ class VideoService
 
         if (!rename(end($tempFiles), $this->outputPath)) {
             Log::error("Failed to rename final output file", [
+                'employeeId' => $this->employeeId,
                 'from' => end($tempFiles),
                 'to' => $this->outputPath
             ]);
@@ -116,7 +128,10 @@ class VideoService
 
         $this->cleanupTempFiles($tempFiles);
 
-        Log::info("Video processing completed successfully", ['outputPath' => $this->outputPath]);
+        Log::info("Video processing completed successfully", [
+            'employeeId' => $this->employeeId,
+            'outputPath' => $this->outputPath
+        ]);
 
         return ['status' => 200, 'message' => 'Text added to video successfully', 'output_path' => $this->outputPath];
     }
@@ -134,7 +149,10 @@ class VideoService
         foreach ($files as $file) {
             if (file_exists($file)) {
                 if (!unlink($file)) {
-                    Log::warning("Failed to delete temporary file", ['file' => $file]);
+                    Log::warning("Failed to delete temporary file", [
+                        'employeeId' => $this->employeeId,
+                        'file' => $file
+                    ]);
                 }
             }
         }
@@ -151,6 +169,7 @@ class VideoService
     public function processOverlayVideo($videoPath, $start, $end, $position, $overlayVideoPath)
     {
         Log::info("Starting video overlay processing", [
+            'employeeId' => $this->employeeId,
             'videoPath' => $videoPath,
             'start' => $start,
             'end' => $end,
@@ -169,7 +188,10 @@ class VideoService
         }
 
         if (!file_exists($videoPath)) {
-            Log::error("Input video file not found", ['videoPath' => $videoPath]);
+            Log::error("Input video file not found", [
+                'employeeId' => $this->employeeId,
+                'videoPath' => $videoPath
+            ]);
             return ['status' => 404, 'message' => 'Input video file not found'];
         }
 
@@ -186,13 +208,20 @@ class VideoService
 
         $command = "ffmpeg -y -i {$inputPath} -i {$overlayVideoPath} -filter_complex \"[1:v]trim=0:{$duration},setpts=PTS-STARTPTS[overlay];[0:v][overlay] overlay={$x}:{$y}:enable='between(t,{$start},{$end})'\" -codec:a copy {$tempOutputPath}";
 
-        Log::info("Executing FFmpeg command", ['command' => $command]);
+        Log::info("Executing FFmpeg command", [
+            'employeeId' => $this->employeeId,
+            'command' => $command
+        ]);
         exec($command . " 2>&1", $output, $status);
 
-        Log::info("FFmpeg command output", ['output' => $output]);
+        Log::info("FFmpeg command output", [
+            'employeeId' => $this->employeeId,
+            'output' => $output
+        ]);
 
         if ($status !== 0) {
             Log::error("Failed to overlay video", [
+                'employeeId' => $this->employeeId,
                 'status' => $status,
                 'output' => $output,
                 'command' => $command
@@ -201,7 +230,10 @@ class VideoService
         }
 
         if (!file_exists($tempOutputPath)) {
-            Log::error("Temporary output file was not created", ['outputPath' => $tempOutputPath]);
+            Log::error("Temporary output file was not created", [
+                'employeeId' => $this->employeeId,
+                'outputPath' => $tempOutputPath
+            ]);
             return ['status' => 500, 'message' => 'Temporary output file was not created', 'outputPath' => $tempOutputPath];
         }
 
@@ -209,13 +241,17 @@ class VideoService
 
         if (!rename($tempOutputPath, $finalOutputPath)) {
             Log::error("Failed to rename temporary output file", [
+                'employeeId' => $this->employeeId,
                 'from' => $tempOutputPath,
                 'to' => $finalOutputPath
             ]);
             return ['status' => 500, 'message' => 'Failed to rename temporary output file'];
         }
 
-        Log::info("Video overlay processing completed successfully", ['outputPath' => $finalOutputPath]);
+        Log::info("Video overlay processing completed successfully", [
+            'employeeId' => $this->employeeId,
+            'outputPath' => $finalOutputPath
+        ]);
 
         return ['status' => 200, 'message' => 'Video overlaid successfully', 'output_path' => $finalOutputPath];
     }
