@@ -9,7 +9,7 @@ use App\Services\Api\VideoService;
 class VideoController extends Controller
 {
     public $videoService;
-    public $url = "http://testlab.cfd/video-generator";
+    public $url = "https://testlab.cfd/video-generator";
 
     public function __construct(VideoService $videoService)
     {
@@ -41,7 +41,7 @@ class VideoController extends Controller
         $this->videoService->addTextToVideo(
             "{$wish1}",
             4,
-            7.5,
+            13,
             [1100, 200],
             $font,
             72,
@@ -53,8 +53,8 @@ class VideoController extends Controller
         $this->videoService->addTextToVideo(
             "{$wish2}",
             8,
-            12,
-            [1100, 200],
+            13,
+            [1100, 400],
             $font,
             72,
             'white',
