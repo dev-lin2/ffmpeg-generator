@@ -17,6 +17,16 @@ class VideoService
         $this->videoPath = public_path('main.mp4');
     }
 
+    public function setVideoPath($videoPath)
+    {
+        $this->videoPath = $videoPath;
+    }
+
+    public function getVideoPath()
+    {
+        return $this->videoPath;
+    }
+
     public function setOutputPath($employeeId)
     {
         $this->employeeId = $employeeId;
@@ -58,6 +68,11 @@ class VideoService
         $lines = explode("\n", $text);
         $inputPath = $this->videoPath;
         $tempFiles = [];
+
+        Log::info("Processing text lines", [
+            'employeeId' => $this->employeeId,
+            'lines' => $lines
+        ]);
 
         foreach ($lines as $index => $line) {
             $line = $this->escapeString($line);
