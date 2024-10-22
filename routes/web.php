@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/", function () {
     // Redirect to admin
-    return redirect("/admin");
+    return "Hello World";
 });
 
 Route::post('/generate-video', [VideoController::class, 'generateVideo'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
