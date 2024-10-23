@@ -22,7 +22,7 @@ class VideoController extends Controller
         $wish1 = $request->wish1;
         $wish2 = $request->wish2;
 
-        $font = public_path('FUTENE.ttf');
+        $font = public_path('SAWARIBI.ttf');
         $overlayVideo = public_path('overlay.mp4');
 
         $this->videoService->setOutputPath($request->employee_id);

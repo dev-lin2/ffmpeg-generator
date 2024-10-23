@@ -31,29 +31,34 @@ class BirthDayUserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static ?string $label = 'user';
+    public static ?string $label = 'お誕生日方一覧';
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'お誕生日方一覧';
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label('動画名')
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email')
+                    ->label('メールアドレス')
                     ->required(),
                 TextInput::make('employee_id')
-                    ->label('Employee ID')
+                    ->label('従業員番号')
                     ->required(),
                 DatePicker::make('join_date')
-                    ->label('Join Date')
+                    ->label('入社日')
                     ->required(),
                 DatePicker::make('birthday')
-                    ->label('Birthday')
+                    ->label('お誕生日')
                     ->required(),
                 TextInput::make('video_url')
-                    ->label('Video Url')
+                    ->label('動画 URL')
                     ->visibleOn('view')
             ]);
     }
@@ -63,43 +68,49 @@ class BirthDayUserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label('氏名')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
-                    ->label('Email')
+                    ->label('メールアドレス')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('employee_id')
-                    ->label('Employee ID')
+                    ->label('従業員番号')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('join_date')
-                    ->label('Join Date')
+                    ->label('入社日')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('birthday')
-                    ->label('Birthday')
+                    ->label('お誕生日')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('is_wish_sent')
-                    ->label('Is Wish Sent')
+                    ->label('誕生日の願い送信')
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(function (TextColumn $column) {
                         return $column->getState() ? 'Yes' : 'No';
                     }),
+                TextColumn::make('templateVideo.name')
+                    ->label('動画テンプレート')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('is_video_generated')
-                    ->label('Is Video Generated')
+                    ->label('動画作成')
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(function (TextColumn $column) {
                         return $column->getState() ? 'Yes' : 'No';
                     }),
                 TextColumn::make('video_url')
-                    ->label('Video Url')
+                    ->label('動画 URL')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->url(fn($record) => $record->video_url)
+                    ->openUrlInNewTab(),
             ])
             ->filters([
                 SelectFilter::make('birthday')
@@ -134,8 +145,8 @@ class BirthDayUserResource extends Resource
             ->recordAction('view')
             ->recordUrl(null)
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('表示'),
+                Tables\Actions\EditAction::make()->label('編集'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

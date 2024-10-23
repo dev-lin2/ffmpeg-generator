@@ -13,7 +13,21 @@ class EditTemplateVideo extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('削除'),
+        ];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Actions\Action::make('cancel')
+                ->label('キャンセル')
+                ->action(fn() => $this->redirect($this->getResource()::getUrl('index')))
+                ->color('danger'),
+            Actions\Action::make('save')
+                ->label('保存')
+                ->action('save')
+                ->color('primary'),
         ];
     }
 }

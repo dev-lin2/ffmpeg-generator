@@ -21,21 +21,26 @@ class TemplateVideoResource extends Resource
     protected static ?string $model = TemplateVideo::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
+    public static ?string $label = '動画テンプレート一覧';
 
-    public static ?string $label = 'Template Videos';
+    public static function getPluralLabel(): ?string
+    {
+        return '動画テンプレート一覧';
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->label('Name'),
+                    ->label('動画名'),
                 TextInput::make('video_url')
-                    ->label('Video URL'),
+                    ->label('動画URL'),
                 Textarea::make('wish_text_1')
-                    ->label('Wish Text 1'),
+                    ->label('テキスト1'),
                 Textarea::make('wish_text_2')
-                    ->label('Wish Text 2'),
+                    ->label('テキスト2'),
 
             ]);
     }
@@ -45,19 +50,19 @@ class TemplateVideoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label('動画名')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('wish_text_1')
-                    ->label('Wish Text 1')
+                    ->label('テキスト1')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('wish_text_2')
-                    ->label('Wish Text 2')
+                    ->label('テキスト2')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('video_url')
-                    ->label('Video URL')
+                    ->label('動画URL')
                     ->searchable()
                     ->sortable(),
             ])
@@ -65,7 +70,7 @@ class TemplateVideoResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->label('編集'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

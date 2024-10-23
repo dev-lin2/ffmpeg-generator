@@ -17,7 +17,8 @@ class BirthdayUser extends Model
         'birthday',
         'is_wish_sent',
         'is_video_generated',
-        'video_url'
+        'video_url',
+        'template_video_id',
     ];
 
     public function scopeNextWeekBirthdayUsers($query)
@@ -33,5 +34,10 @@ class BirthdayUser extends Model
     public function scopeThisWeekBirthdayUsers($query)
     {
         return $query->whereBetween('birthday', [now(), now()->addDays(7)]);
+    }
+
+    public function templateVideo()
+    {
+        return $this->belongsTo(TemplateVideo::class , 'template_video_id');
     }
 }

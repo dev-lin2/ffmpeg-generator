@@ -30,7 +30,7 @@ class AdminVideoService
             $name = "Dear " . $user->name . " さん";
             $wish1 = $video->wish_text_1;
             $wish2 = $video->wish_text_2;
-            $font = public_path('FUTENE.ttf');
+            $font = public_path('SAWARIBI.ttf');
 
             // Set the output path for the video
             $this->videoService->setOutputPath($user->employee_id);
@@ -75,6 +75,7 @@ class AdminVideoService
             $user->update([
                 'video_url' => url("videos/{$user->employee_id}.mp4"),
                 'is_video_generated' => true,
+                'template_video_id' => $templateId,
             ]);
         }
 
@@ -94,11 +95,11 @@ class AdminVideoService
             // The video is /public/videos/{$user->employee_id}.mp4
             $videoUrl = url("videos/{$user->employee_id}.mp4");
 
-            $this->lineWorkService->sendVideo($user->linework_user_id, $videoUrl, $thumbnailUrl);
+            $this->lineWorkService->sendVideo($user->email, $videoUrl, $thumbnailUrl);
 
             // Update the user's is_video_sent after the video is sent
             $user->update([
-                'is_video_sent' => true,
+                'is_wish_sent' => true,
             ]);
         }
     }
