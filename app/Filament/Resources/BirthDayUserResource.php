@@ -151,8 +151,8 @@ class BirthDayUserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('generateVideo')
-                        ->label('Generate Video')
-                        ->modalHeading('Generate Video')
+                        ->label('動画を生成する')
+                        ->modalHeading('動画を生成する')
                         ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Select a video template to generate the video</p>'))
                         ->icon('heroicon-o-video-camera')
                         ->requiresConfirmation(false)
@@ -180,9 +180,9 @@ class BirthDayUserResource extends Resource
                                 ->send();
                         }),
                     Tables\Actions\BulkAction::make('sendWish')
-                        ->label('Send Wish')
-                        ->modalHeading('Send Wish')
-                        ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Send a wish to the selected users</p>'))
+                        ->label('送信')
+                        ->modalHeading('送信')
+                        // ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Send a wish to the selected users</p>'))
                         ->icon('heroicon-o-paper-airplane')
                         ->requiresConfirmation(false)
                         ->action(function (Collection $records) {
