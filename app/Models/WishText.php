@@ -9,6 +9,8 @@ class WishText extends Model
 {
     use HasFactory;
 
+    protected $table = 'wish_texts';
+
     protected $fillable = [
         'wish_1_text_1',
         'wish_1_text_2',

@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('wish_texts', function (Blueprint $table) {
             $table->id();
-            $table->string('wish_1_text_1');
-            $table->string('wish_1_text_2');
-            $table->string('wish_1_text_3');
-            $table->string('wish_2_text_1');
-            $table->string('wish_2_text_2');
-            $table->string('wish_2_text_3');
-            $table->string('wish_3_text_1');
-            $table->string('wish_3_text_2');
-            $table->string('wish_3_text_3');
+            $table->text('wish_1_text_1');
+            $table->text('wish_1_text_2');
+            $table->text('wish_1_text_3');
+            $table->text('wish_2_text_1');
+            $table->text('wish_2_text_2');
+            $table->text('wish_2_text_3');
+            $table->text('wish_3_text_1');
+            $table->text('wish_3_text_2');
+            $table->text('wish_3_text_3');
             $table->timestamps();
         });
     }
