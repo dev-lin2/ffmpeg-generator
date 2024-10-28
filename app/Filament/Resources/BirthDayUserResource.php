@@ -45,8 +45,17 @@ class BirthDayUserResource extends Resource
                 TextInput::make('name')
                     ->label('動画名')
                     ->required(),
+                TextInput::make('first_name')
+                    ->label('名')
+                    ->required(),
+                TextInput::make('last_name')
+                    ->label('姓')
+                    ->required(),
                 TextInput::make('email')
                     ->label('メールアドレス')
+                    ->required(),
+                TextInput::make('department')
+                    ->label('部署')
                     ->required(),
                 TextInput::make('employee_id')
                     ->label('従業員番号')
@@ -71,8 +80,20 @@ class BirthDayUserResource extends Resource
                     ->label('氏名')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('first_name')
+                    ->label('名')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('last_name')
+                    ->label('姓')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('email')
                     ->label('メールアドレス')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('department')
+                    ->label('部署')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('employee_id')
