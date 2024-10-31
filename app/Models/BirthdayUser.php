@@ -11,6 +11,8 @@ class BirthdayUser extends Model
 
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'employee_id',
         'join_date',
@@ -19,6 +21,7 @@ class BirthdayUser extends Model
         'is_video_generated',
         'video_url',
         'template_video_id',
+        'department',
     ];
 
     public function scopeNextWeekBirthdayUsers($query)
