@@ -174,7 +174,7 @@ class BirthDayUserResource extends Resource
                     Tables\Actions\BulkAction::make('generateVideo')
                         ->label('動画を生成する')
                         ->modalHeading('動画を生成する')
-                        ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Select a video template to generate the video</p>'))
+                        // ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Select a video template to generate the video</p>'))
                         ->icon('heroicon-o-video-camera')
                         ->requiresConfirmation(false)
                         // ->form([

@@ -24,6 +24,11 @@ class TemplateVideoResource extends Resource
     
     public static ?string $label = '動画テンプレート一覧';
 
+    public static function canViewAny(): bool
+    {
+        return false;
+    }
+
     public static function getPluralLabel(): ?string
     {
         return '動画テンプレート一覧';
