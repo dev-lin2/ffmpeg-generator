@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\BirthdayUser;
+use App\Models\BirthdayVideoRecord;
 use App\Models\TemplateVideo;
+use App\Models\WishText;
 use App\Services\Api\VideoService;
+use Carbon\Carbon;
 
 class AdminVideoService
 {
@@ -19,67 +22,80 @@ class AdminVideoService
 
     public function generateVideo($data)
     {
+        $wishText = WishText::find(1);
         $userIds = $data['user_ids'];
-        $templateId = $data['template_id'];
 
-        $video = TemplateVideo::find($templateId);
-
-        // Here you can process the video generation for each user
         foreach ($userIds as $userId) {
+            $log = new BirthdayVideoRecord();
+            
             $user = BirthdayUser::find($userId);
-            $name = "Dear " . $user->name . " さん";
-            $wish1 = $video->wish_text_1;
-            $wish2 = $video->wish_text_2;
+            $name = $user->first_name . ' ' . $user->last_name;
+            $department = $user->department;
+
+            $joinDate = Carbon::parse($user->join_date);
+            $now = Carbon::now();
+            $years = $now->diffInYears($joinDate);
+            $months = $now->diffInMonths($joinDate) % 12;
+            $totalWorkingDuration = "{$years}年{$months}ヶ月";
+
+            $wishes = [
+                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_1_text_" . rand(1, 3)}),
+                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_2_text_" . rand(1, 3)}),
+                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_3_text_" . rand(1, 3)})
+            ];
+
             $font = public_path('SAWARIBI.ttf');
 
-            // Set the output path for the video
             $this->videoService->setOutputPath($user->employee_id);
 
-            // Add text to the video
             $this->videoService->addTextToVideo(
-                "{$name}",
+                $wishes[0],
                 0.5,
-                3.5,
-                [720, 100],
+                10,
+                [620, 250],
                 $font,
-                50,
-                'white',
-                0.1
+                60,
+                'black',
+                0.03,
             );
 
             $this->videoService->addTextToVideo(
-                "{$wish1}",
-                4,
-                13,
-                [1000, 200],
+                $wishes[1],
+                10,
+                19,
+                [1000, 250],
                 $font,
                 50,
-                'white',
-                0.05,
+                'black',
+                0.03,
                 public_path("videos/{$user->employee_id}.mp4")
             );
 
             $this->videoService->addTextToVideo(
-                "{$wish2}",
-                8,
-                13,
-                [1000, 400],
+                $wishes[2],
+                20,
+                30,
+                [1100, 250],
                 $font,
                 50,
-                'white',
-                0.05,
+                'black',
+                0.03,
                 public_path("videos/{$user->employee_id}.mp4")
             );
 
-            // I want to update the user's video_url and is_video_generated after the video is generated
             $user->update([
                 'video_url' => url("videos/{$user->employee_id}.mp4"),
                 'is_video_generated' => true,
-                'template_video_id' => $templateId,
+            ]);
+
+            $log->create([
+                'birthday_user_id' => $userId,
+                'wish_text_1' => $wishes[0],
+                'wish_text_2' => $wishes[1],
+                'wish_text_3' => $wishes[2],
             ]);
         }
 
-        // Return some response or process result
         return [
             'success' => true,
             'message' => 'Video generation started for ' . count($userIds) . ' users.',
@@ -90,14 +106,11 @@ class AdminVideoService
     {
         $thumbnailUrl = url('bd.png');
 
-        // Here you can send the video to each user
         foreach ($data as $user) {
-            // The video is /public/videos/{$user->employee_id}.mp4
             $videoUrl = url("videos/{$user->employee_id}.mp4");
 
             $this->lineWorkService->sendVideo($user->email, $videoUrl, $thumbnailUrl);
 
-            // Update the user's is_video_sent after the video is sent
             $user->update([
                 'is_wish_sent' => true,
             ]);

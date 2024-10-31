@@ -21,4 +21,11 @@ Route::get("/", function () {
     return redirect('/admin');
 });
 
+// Route::get("/admin/wish-texts", function () {
+//     // Redirect to edit with Id 1
+
+//     return redirect('/admin/wish-texts/1/edit');
+// });
+
+
 Route::post('/generate-video', [VideoController::class, 'generateVideo'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);

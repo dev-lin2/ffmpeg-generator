@@ -11,14 +11,18 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WishTextResource extends Resource
 {
     protected static ?string $model = WishText::class;
+    protected static ?string $label = 'ウィッシュ テキスト';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'ウィッシュ テキスト';
+    }
 
     public static function form(Form $form): Form
     {
@@ -26,42 +30,42 @@ class WishTextResource extends Resource
             ->schema([
                 //
                 // Wish texts 1 2 3
-                Forms\Components\Fieldset::make('Wish 1')
+                Forms\Components\Fieldset::make('ウィッシュ 1')
                     ->schema([
                         Textarea::make('wish_1_text_1')
-                            ->label('Wish 1 Text A')
+                            ->label('ウィッシュ 1 テキスト A')
                             ->required(),
                         Textarea::make('wish_1_text_2')
-                            ->label('Wish 1 Text B')
+                            ->label('ウィッシュ 1 テキスト B')
                             ->required(),
                         Textarea::make('wish_1_text_3')
-                            ->label('Wish 1 Text C')
+                            ->label('ウィッシュ 1 テキスト C')
                             ->required(),
                     ]),
 
-                Forms\Components\Fieldset::make('Wish 2')
+                Forms\Components\Fieldset::make('ウィッシュ 2')
                     ->schema([
                         Textarea::make('wish_2_text_1')
-                            ->label('Wish 2 Text A')
+                            ->label('ウィッシュ 2 テキスト A')
                             ->required(),
                         Textarea::make('wish_2_text_2')
-                            ->label('Wish 2 Text B')
+                            ->label('ウィッシュ 2 テキスト B')
                             ->required(),
                         Textarea::make('wish_2_text_3')
-                            ->label('Wish 2 Text C')
+                            ->label('ウィッシュ 2 テキスト C')
                             ->required(),
                     ]),
 
-                Forms\Components\Fieldset::make('Wish 3')
+                Forms\Components\Fieldset::make('ウィッシュ 3')
                     ->schema([
                         Textarea::make('wish_3_text_1')
-                            ->label('Wish 3 Text A')
+                            ->label('ウィッシュ 3 テキスト A')
                             ->required(),
                         Textarea::make('wish_3_text_2')
-                            ->label('Wish 3 Text B')
+                            ->label('ウィッシュ 3 テキスト B')
                             ->required(),
                         Textarea::make('wish_3_text_3')
-                            ->label('Wish 3 Text C')
+                            ->label('ウィッシュ 3 テキスト C')
                             ->required(),
                     ]),
             ]);
@@ -74,36 +78,31 @@ class WishTextResource extends Resource
                 //
                 // Wish texts 1 2 3
                 Tables\Columns\TextColumn::make('wish_1_text_1')
-                    ->label('Wish 1 Text A'),
+                    ->label('ウィッシュ 1 テキスト A'),
                 Tables\Columns\TextColumn::make('wish_1_text_2')
-                    ->label('Wish 1 Text B'),
+                    ->label('ウィッシュ 1 テキスト B'),
                 Tables\Columns\TextColumn::make('wish_1_text_3')
-                    ->label('Wish 1 Text C'),
+                    ->label('ウィッシュ 1 テキスト C'),
 
                 Tables\Columns\TextColumn::make('wish_2_text_1')
-                    ->label('Wish 2 Text A'),
+                    ->label('ウィッシュ 2 テキスト A'),
                 Tables\Columns\TextColumn::make('wish_2_text_2')
-                    ->label('Wish 2 Text B'),
+                    ->label('ウィッシュ 2 テキスト B'),
                 Tables\Columns\TextColumn::make('wish_2_text_3')
-                    ->label('Wish 2 Text C'),
+                    ->label('ウィッシュ 2 テキスト C'),
 
                 Tables\Columns\TextColumn::make('wish_3_text_1')
-                    ->label('Wish 3 Text A'),
+                    ->label('ウィッシュ 3 テキスト A'),
                 Tables\Columns\TextColumn::make('wish_3_text_2')
-                    ->label('Wish 3 Text B'),
+                    ->label('ウィッシュ 3 テキスト B'),
                 Tables\Columns\TextColumn::make('wish_3_text_3')
-                    ->label('Wish 3 Text C'),
+                    ->label('ウィッシュ 3 テキスト C'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

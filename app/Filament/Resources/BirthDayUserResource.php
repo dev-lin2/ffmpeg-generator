@@ -115,10 +115,10 @@ class BirthDayUserResource extends Resource
                     ->formatStateUsing(function (TextColumn $column) {
                         return $column->getState() ? 'Yes' : 'No';
                     }),
-                TextColumn::make('templateVideo.name')
-                    ->label('動画テンプレート')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('templateVideo.name')
+                //     ->label('動画テンプレート')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('is_video_generated')
                     ->label('動画作成')
                     ->searchable()
@@ -177,22 +177,22 @@ class BirthDayUserResource extends Resource
                         ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Select a video template to generate the video</p>'))
                         ->icon('heroicon-o-video-camera')
                         ->requiresConfirmation(false)
-                        ->form([
-                            Select::make('template_id')
-                                ->label('Video Template')
-                                ->options(TemplateVideo::pluck('name', 'id'))
-                                ->required()
-                                ->searchable()
-                        ])
+                        // ->form([
+                        //     Select::make('template_id')
+                        //         ->label('Video Template')
+                        //         ->options(TemplateVideo::pluck('name', 'id'))
+                        //         ->required()
+                        //         ->searchable()
+                        // ])
                         ->action(function (Collection $records, array $data) {
                             $adminVideoService = app(AdminVideoService::class);
 
                             $userIds = $records->pluck('id')->toArray();
-                            $templateId = $data['template_id'];
+                            // $templateId = $data['template_id'];
 
                             $adminVideoService->generateVideo([
                                 'user_ids' => $userIds,
-                                'template_id' => $templateId,
+                                // 'template_id' => $templateId,
                             ]);
 
                             Notification::make()
