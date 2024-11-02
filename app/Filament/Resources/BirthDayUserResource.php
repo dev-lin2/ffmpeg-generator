@@ -6,6 +6,7 @@ use App\Filament\Resources\BirthDayUserResource\Pages;
 use App\Filament\Resources\BirthDayUserResource\RelationManagers;
 use App\Models\BirthdayUser;
 use App\Models\TemplateVideo;
+use App\Models\WishText;
 use App\Services\AdminVideoService;
 use App\Services\LineWorkService;
 use Filament\Forms;
@@ -177,21 +178,59 @@ class BirthDayUserResource extends Resource
                         // ->modalContent(fn() => new HtmlString('<p class="text-gray-500">Select a video template to generate the video</p>'))
                         ->icon('heroicon-o-video-camera')
                         ->requiresConfirmation(false)
-                        // ->form([
-                        //     Select::make('template_id')
-                        //         ->label('Video Template')
-                        //         ->options(TemplateVideo::pluck('name', 'id'))
-                        //         ->required()
-                        //         ->searchable()
-                        // ])
+                        ->form([
+                            Select::make('wish_text_a')
+                                ->label('願いテキスト A')
+                                ->options(function () {
+                                    $wishText = WishText::find(1);
+                                    return [
+                                        $wishText->wish_1_text_1 => $wishText->wish_1_text_1,
+                                        $wishText->wish_1_text_2 => $wishText->wish_1_text_2,
+                                        $wishText->wish_2_text_3 => $wishText->wish_2_text_3,
+                                    ];
+                                })
+                                ->required()
+                                ->searchable(),
+                            Select::make('wish_text_b')
+                                ->label('願いテキスト B')
+                                ->options(function () {
+                                    $wishText = WishText::find(1);
+                                    return [
+                                        $wishText->wish_2_text_1 => $wishText->wish_2_text_1,
+                                        $wishText->wish_2_text_2 => $wishText->wish_2_text_2,
+                                        $wishText->wish_2_text_3 => $wishText->wish_2_text_3,
+                                    ];
+                                })
+                                ->required()
+                                ->searchable(),
+                            Select::make('wish_text_c')
+                                ->label('願いテキスト C')
+                                ->options(function () {
+                                    $wishText = WishText::find(1);
+                                    return [
+                                        $wishText->wish_3_text_1 => $wishText->wish_3_text_1,
+                                        $wishText->wish_3_text_2 => $wishText->wish_3_text_2,
+                                        $wishText->wish_3_text_3 => $wishText->wish_3_text_3,
+                                    ];
+                                })
+                                ->required()
+                                ->searchable(),
+                        ])
+
                         ->action(function (Collection $records, array $data) {
                             $adminVideoService = app(AdminVideoService::class);
 
                             $userIds = $records->pluck('id')->toArray();
                             // $templateId = $data['template_id'];
+                            $wishTextA = $data['wish_text_a'];
+                            $wishTextB = $data['wish_text_b'];
+                            $wishTextC = $data['wish_text_c'];
 
                             $adminVideoService->generateVideo([
                                 'user_ids' => $userIds,
+                                'wish_text_a' => $wishTextA,
+                                'wish_text_b' => $wishTextB,
+                                'wish_text_c' => $wishTextC,
                                 // 'template_id' => $templateId,
                             ]);
 

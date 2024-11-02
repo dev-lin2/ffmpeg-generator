@@ -25,6 +25,10 @@ class AdminVideoService
         $wishText = WishText::find(1);
         $userIds = $data['user_ids'];
 
+        $text1 = $data['wish_text_a'];
+        $text2 = $data['wish_text_b'];
+        $text3 = $data['wish_text_c'];
+
         foreach ($userIds as $userId) {
             $log = new BirthdayVideoRecord();
             
@@ -39,10 +43,18 @@ class AdminVideoService
             $totalWorkingDuration = "{$years}年{$months}ヶ月";
 
             $wishes = [
-                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_1_text_" . rand(1, 3)}),
-                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_2_text_" . rand(1, 3)}),
-                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_3_text_" . rand(1, 3)})
+                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $text1),
+                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $text2),
+                str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $text3),
             ];
+            
+            // $wishes = [
+            //     str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_1_text_" . rand(1, 1)}),
+            //     str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_2_text_" . rand(1, 1)}),
+            //     str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_3_text_" . rand(1, 1)})
+            // ];
+
+            // dd($wishes);
 
             $font = public_path('SAWARIBI.ttf');
 
