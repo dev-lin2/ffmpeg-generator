@@ -129,7 +129,7 @@ class VideoService
 
             $inputPath = $outputPath;
             $y += $fontSize + 10;
-            $startTime += 1;
+            $startTime += 0.5;
         }
 
         if (!rename(end($tempFiles), $this->outputPath)) {
