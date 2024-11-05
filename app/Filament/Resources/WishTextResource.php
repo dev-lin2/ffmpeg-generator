@@ -30,42 +30,42 @@ class WishTextResource extends Resource
             ->schema([
                 //
                 // Wish texts 1 2 3
-                Forms\Components\Fieldset::make('ウィッシュ 1')
+                Forms\Components\Fieldset::make('ウィッシュ A')
                     ->schema([
                         Textarea::make('wish_1_text_1')
-                            ->label('ウィッシュ 1 テキスト A')
+                            ->label('ウィッシュ A テキスト 1')
                             ->required(),
                         Textarea::make('wish_1_text_2')
-                            ->label('ウィッシュ 1 テキスト B')
+                            ->label('ウィッシュ A テキスト 2')
                             ->required(),
                         Textarea::make('wish_1_text_3')
-                            ->label('ウィッシュ 1 テキスト C')
+                            ->label('ウィッシュ A テキスト 3')
                             ->required(),
                     ]),
 
-                Forms\Components\Fieldset::make('ウィッシュ 2')
+                Forms\Components\Fieldset::make('ウィッシュ B')
                     ->schema([
                         Textarea::make('wish_2_text_1')
-                            ->label('ウィッシュ 2 テキスト A')
+                            ->label('ウィッシュ B テキスト 1')
                             ->required(),
                         Textarea::make('wish_2_text_2')
-                            ->label('ウィッシュ 2 テキスト B')
+                            ->label('ウィッシュ B テキスト 2')
                             ->required(),
                         Textarea::make('wish_2_text_3')
-                            ->label('ウィッシュ 2 テキスト C')
+                            ->label('ウィッシュ B テキスト 3')
                             ->required(),
                     ]),
 
-                Forms\Components\Fieldset::make('ウィッシュ 3')
+                Forms\Components\Fieldset::make('ウィッシュ C')
                     ->schema([
                         Textarea::make('wish_3_text_1')
-                            ->label('ウィッシュ 3 テキスト A')
+                            ->label('ウィッシュ 3 テキスト 1')
                             ->required(),
                         Textarea::make('wish_3_text_2')
-                            ->label('ウィッシュ 3 テキスト B')
+                            ->label('ウィッシュ 3 テキスト 2')
                             ->required(),
                         Textarea::make('wish_3_text_3')
-                            ->label('ウィッシュ 3 テキスト C')
+                            ->label('ウィッシュ 3 テキスト 3')
                             ->required(),
                     ]),
             ]);

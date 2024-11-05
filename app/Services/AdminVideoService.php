@@ -33,7 +33,7 @@ class AdminVideoService
             $log = new BirthdayVideoRecord();
             
             $user = BirthdayUser::find($userId);
-            $name = $user->first_name . ' ' . $user->last_name;
+            $name = $user->last_name . ' ' . $user->first_name;
             $department = $user->department;
 
             $joinDate = Carbon::parse($user->join_date);

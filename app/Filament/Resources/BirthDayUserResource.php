@@ -82,11 +82,11 @@ class BirthDayUserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('first_name')
-                    ->label('名')
+                    ->label('性')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('last_name')
-                    ->label('姓')
+                    ->label('名')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
