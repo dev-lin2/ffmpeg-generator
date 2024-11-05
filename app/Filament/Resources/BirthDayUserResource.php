@@ -43,14 +43,14 @@ class BirthDayUserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->label('動画名')
+                // TextInput::make('name')
+                //     ->label('動画名')
+                //     ->required(),
+                TextInput::make('last_name')
+                    ->label('性')
                     ->required(),
                 TextInput::make('first_name')
                     ->label('名')
-                    ->required(),
-                TextInput::make('last_name')
-                    ->label('姓')
                     ->required(),
                 TextInput::make('email')
                     ->label('メールアドレス')
@@ -77,16 +77,16 @@ class BirthDayUserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->label('氏名')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('name')
+                //     ->label('氏名')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('first_name')
-                    ->label('性')
+                    ->label('名')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('last_name')
-                    ->label('名')
+                    ->label('性')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
