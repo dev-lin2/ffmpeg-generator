@@ -56,7 +56,7 @@ class AdminVideoService
 
             // dd($wishes);
 
-            $font = public_path('SAWARIBI.ttf');
+            $font = public_path('NOTOSANS.ttf');
 
             $this->videoService->setOutputPath($user->employee_id);
 
