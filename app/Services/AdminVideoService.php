@@ -56,7 +56,7 @@ class AdminVideoService
 
             // dd($wishes);
 
-            $font = public_path('NOTOSANS.ttf');
+            $font = public_path('NOTOSANS_SEMI.ttf');
 
             $this->videoService->setOutputPath($user->employee_id);
 
@@ -64,9 +64,9 @@ class AdminVideoService
                 $wishes[0],
                 0.5,
                 10,
-                [620, 250],
+                [520, 250],
                 $font,
-                60,
+                40,
                 'black',
                 0.03,
             );
@@ -77,7 +77,7 @@ class AdminVideoService
                 19,
                 [1000, 250],
                 $font,
-                50,
+                40,
                 'black',
                 0.03,
                 public_path("videos/{$user->employee_id}.mp4")
@@ -89,7 +89,7 @@ class AdminVideoService
                 30,
                 [1100, 250],
                 $font,
-                50,
+                40,
                 'black',
                 0.03,
                 public_path("videos/{$user->employee_id}.mp4")
