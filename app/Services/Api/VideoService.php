@@ -87,7 +87,7 @@ class VideoService
 
             for ($i = 0; $i < $textLength; $i++) {
                 $char = mb_substr($line, $i, 1);
-                $x += $fontSize * 0.8; // Adjust this factor to change character spacing
+                $x += $fontSize * 1; // Adjust this factor to change character spacing
                 $startTime += $charDelay;
                 $drawtext .= "drawtext=text='$char':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$y:enable='between(t,$startTime,$endTime)'";
                 if ($i != $textLength - 1) {
