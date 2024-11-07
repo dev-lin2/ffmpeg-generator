@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Jobs\ProcessOverlayVideo;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\ProcessVideo;
+use App\Models\BirthdayUser;
 
 class VideoService
 {
@@ -33,15 +34,15 @@ class VideoService
         $this->outputPath = public_path("videos/{$employeeId}.mp4");
     }
 
-    public function addTextToVideo($text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null)
+    public function addTextToVideo($text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null, $endOfProcess = false)
     {
         // Dispatch the job to the queue
-        ProcessVideo::dispatch($this->employeeId, $text, $start, $end, $position, $fontPath, $size, $color, $charDelay, $videoPath);
+        ProcessVideo::dispatch($this->employeeId, $text, $start, $end, $position, $fontPath, $size, $color, $charDelay, $videoPath, $endOfProcess);
 
         return ['status' => 202, 'message' => 'Video processing job has been queued'];
     }
 
-    public function processVideo($text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null)
+    public function processVideo($text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null, $endOfProcess = false)
     {
         Log::info("Starting video processing", [
             'employeeId' => $this->employeeId,
@@ -85,25 +86,26 @@ class VideoService
             $outputPath = str_replace('.mp4', "_{$index}.mp4", $this->outputPath);
             $tempFiles[] = $outputPath;
 
-            for ($i = 0; $i < $textLength; $i++) {
-                $char = mb_substr($line, $i, 1);
-                $x += $fontSize * 1; // Adjust this factor to change character spacing
-                $startTime += $charDelay;
+            // for ($i = 0; $i < $textLength; $i++) {
+            //     $char = mb_substr($line, $i, 1);
+            //     $x += $fontSize * 1; // Adjust this factor to change character spacing
+            //     $startTime += $charDelay;
 
-                // Check if the character is one of the specified Japanese punctuation characters
-                $tempY = $y;
-                if (in_array($char, ['一', '。', '、'])) {
-                    $tempY += 20;
-                }
+            //     // Check if the character is one of the specified Japanese punctuation characters
+            //     $tempY = $y;
+            //     if (in_array($char, ['一', '。', '、'])) {
+            //         $tempY += 20;
+            //     }
 
-                $drawtext .= "drawtext=text='$char':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$tempY:enable='between(t,$startTime,$endTime)'";
-                if ($i != $textLength - 1) {
-                    $drawtext .= ", ";
-                }
-            }
+            //     $drawtext .= "drawtext=text='$char':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$tempY:enable='between(t,$startTime,$endTime)'";
+            //     if ($i != $textLength - 1) {
+            //         $drawtext .= ", ";
+            //     }
+            // }
 
             // Draw the entire line at once
-            // $drawtext = "drawtext=text='{$line}':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$y:enable='between(t,$startTime,$endTime)'";
+            $fadeInDuration = 1.5; // Duration of the fade-in effect in seconds
+            $drawtext = "drawtext=text='{$line}':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$y:enable='between(t,{$startTime},{$endTime})':alpha='if(lt(t,{$startTime}),0,if(lt(t,{$startTime}+{$fadeInDuration}),(t-{$startTime})/{$fadeInDuration},1))'";
 
             $command = "ffmpeg -y -i {$inputPath} -vf \"$drawtext\" -codec:a copy {$outputPath}";
 
@@ -139,7 +141,7 @@ class VideoService
 
             $inputPath = $outputPath;
             $y += $fontSize + 10;
-            $startTime += 0.5;
+            $startTime += 0.8; // Add a delay between lines
         }
 
         if (!rename(end($tempFiles), $this->outputPath)) {
@@ -157,6 +159,17 @@ class VideoService
             'employeeId' => $this->employeeId,
             'outputPath' => $this->outputPath
         ]);
+
+        // If end of process is true, the set the user's video path and is_video_generated
+        if ($endOfProcess) {
+            Log::info("Setting user's video path and is_video_generated flag", [
+                'employeeId' => $this->employeeId
+            ]);
+            $user = BirthdayUser::where('employee_id', $this->employeeId)->first();
+            $user->video_url = url("videos/{$user->employee_id}.mp4");
+            $user->is_video_generated = true;
+            $user->save();
+        }
 
         return ['status' => 200, 'message' => 'Text added to video successfully', 'output_path' => $this->outputPath];
     }

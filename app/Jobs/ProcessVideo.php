@@ -23,8 +23,9 @@ class ProcessVideo implements ShouldQueue
     protected $color;
     protected $charDelay;
     protected $videoPath;
+    protected $endOfProcess;
 
-    public function __construct($employeeId, $text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null)
+    public function __construct($employeeId, $text, $start, $end, $position, $fontPath, $size, $color, $charDelay = 0.1, $videoPath = null, $endOfProcess = false)
     {
         $this->employeeId = $employeeId;
         $this->text = $text;
@@ -36,6 +37,7 @@ class ProcessVideo implements ShouldQueue
         $this->color = $color;
         $this->charDelay = $charDelay;
         $this->videoPath = $videoPath;
+        $this->endOfProcess = $endOfProcess;
     }
 
     public function handle()
@@ -51,7 +53,8 @@ class ProcessVideo implements ShouldQueue
             $this->size,
             $this->color,
             $this->charDelay,
-            $this->videoPath
+            $this->videoPath,
+            $this->endOfProcess
         );
     }
 }

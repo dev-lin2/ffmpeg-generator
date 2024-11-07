@@ -33,6 +33,13 @@ class AdminVideoService
             $log = new BirthdayVideoRecord();
             
             $user = BirthdayUser::find($userId);
+
+            // Reset video generation status
+            $user->update([
+                'video_url' => null,
+                'is_video_generated' => false,
+            ]);
+
             $name = $user->last_name . '' . $user->first_name;
             $department = $user->department;
 
@@ -92,13 +99,9 @@ class AdminVideoService
                 40,
                 'black',
                 0.03,
-                public_path("videos/{$user->employee_id}.mp4")
+                public_path("videos/{$user->employee_id}.mp4"),
+                true
             );
-
-            $user->update([
-                'video_url' => url("videos/{$user->employee_id}.mp4"),
-                'is_video_generated' => true,
-            ]);
 
             $log->create([
                 'birthday_user_id' => $userId,
