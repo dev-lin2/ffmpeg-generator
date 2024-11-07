@@ -89,11 +89,21 @@ class VideoService
                 $char = mb_substr($line, $i, 1);
                 $x += $fontSize * 1; // Adjust this factor to change character spacing
                 $startTime += $charDelay;
-                $drawtext .= "drawtext=text='$char':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$y:enable='between(t,$startTime,$endTime)'";
+
+                // Check if the character is one of the specified Japanese punctuation characters
+                $tempY = $y;
+                if (in_array($char, ['一', '。', '、'])) {
+                    $tempY += 20;
+                }
+
+                $drawtext .= "drawtext=text='$char':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$tempY:enable='between(t,$startTime,$endTime)'";
                 if ($i != $textLength - 1) {
                     $drawtext .= ", ";
                 }
             }
+
+            // Draw the entire line at once
+            // $drawtext = "drawtext=text='{$line}':fontfile={$fontPath}:fontsize={$fontSize}:fontcolor={$color}:x=$x:y=$y:enable='between(t,$startTime,$endTime)'";
 
             $command = "ffmpeg -y -i {$inputPath} -vf \"$drawtext\" -codec:a copy {$outputPath}";
 
