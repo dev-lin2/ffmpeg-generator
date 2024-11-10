@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Services\Api\VideoService;
+use Illuminate\Support\Facades\Log;
 
 class ProcessVideo implements ShouldQueue
 {
@@ -40,11 +41,10 @@ class ProcessVideo implements ShouldQueue
         $this->endOfProcess = $endOfProcess;
     }
 
-    public function handle()
+    public function handle(VideoService $videoService)
     {
-        $videoService = new VideoService();
         $videoService->setOutputPath($this->employeeId);
-        $videoService->processVideo(
+        $result = $videoService->processVideo(
             $this->text,
             $this->start,
             $this->end,
@@ -56,5 +56,13 @@ class ProcessVideo implements ShouldQueue
             $this->videoPath,
             $this->endOfProcess
         );
+
+        if ($result['status'] !== 200) {
+            Log::error("ProcessVideo job failed", [
+                'employeeId' => $this->employeeId,
+                'result' => $result
+            ]);
+            throw new \Exception($result['message'] . ': ' . ($result['error'] ?? 'Unknown error'));
+        }
     }
 }

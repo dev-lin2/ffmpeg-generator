@@ -4,10 +4,11 @@ namespace App\Services;
 
 use App\Models\BirthdayUser;
 use App\Models\BirthdayVideoRecord;
-use App\Models\TemplateVideo;
 use App\Models\WishText;
 use App\Services\Api\VideoService;
 use Carbon\Carbon;
+use App\Jobs\ProcessVideo;
+use Illuminate\Support\Facades\Bus;
 
 class AdminVideoService
 {
@@ -54,54 +55,20 @@ class AdminVideoService
                 str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $text2),
                 str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $text3),
             ];
-            
-            // $wishes = [
-            //     str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_1_text_" . rand(1, 1)}),
-            //     str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_2_text_" . rand(1, 1)}),
-            //     str_replace(['{name}', '{department}', '{duration}'], [$name, $department, $totalWorkingDuration], $wishText->{"wish_3_text_" . rand(1, 1)})
-            // ];
-
-            // dd($wishes);
 
             $font = public_path('NOTOSANS_SEMI.ttf');
 
             $this->videoService->setOutputPath($user->employee_id);
 
-            $this->videoService->addTextToVideo(
-                $wishes[0],
-                0.5,
-                10,
-                [520, 250],
-                $font,
-                40,
-                'black',
-                0.03,
-            );
+            $baseVideoPath = public_path("videos/{$user->employee_id}.mp4");
 
-            $this->videoService->addTextToVideo(
-                $wishes[1],
-                10,
-                19,
-                [900, 250],
-                $font,
-                40,
-                'black',
-                0.03,
-                public_path("videos/{$user->employee_id}.mp4")
-            );
+            $jobs = [
+                new ProcessVideo($user->employee_id, $wishes[0], 2, 10, [520, 250], $font, 40, 'black', 0.03, null, false),
+                new ProcessVideo($user->employee_id, $wishes[1], 10, 19, [900, 250], $font, 40, 'black', 0.03, $baseVideoPath, false),
+                new ProcessVideo($user->employee_id, $wishes[2], 20, 30, [1000, 250], $font, 40, 'black', 0.03, $baseVideoPath, true)
+            ];
 
-            $this->videoService->addTextToVideo(
-                $wishes[2],
-                20,
-                30,
-                [1000, 250],
-                $font,
-                40,
-                'black',
-                0.03,
-                public_path("videos/{$user->employee_id}.mp4"),
-                true
-            );
+            Bus::chain($jobs)->dispatch();
 
             $log->create([
                 'birthday_user_id' => $userId,
