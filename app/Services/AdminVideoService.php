@@ -63,9 +63,9 @@ class AdminVideoService
             $baseVideoPath = public_path("videos/{$user->employee_id}.mp4");
 
             $jobs = [
-                new ProcessVideo($user->employee_id, $wishes[0], 2, 10, [520, 250], $font, 40, 'black', 0.03, null, false),
-                new ProcessVideo($user->employee_id, $wishes[1], 10, 19, [900, 250], $font, 40, 'black', 0.03, $baseVideoPath, false),
-                new ProcessVideo($user->employee_id, $wishes[2], 20, 30, [1000, 250], $font, 40, 'black', 0.03, $baseVideoPath, true)
+                new ProcessVideo($user->employee_id, $wishes[0], 2, 10, [650, 250], $font, 40, 'black', 0.03, null, false),
+                new ProcessVideo($user->employee_id, $wishes[1], 11, 19, [900, 250], $font, 40, 'black', 0.03, $baseVideoPath, false),
+                new ProcessVideo($user->employee_id, $wishes[2], 21, 30, [1000, 250], $font, 40, 'black', 0.03, $baseVideoPath, true)
             ];
 
             Bus::chain($jobs)->dispatch();

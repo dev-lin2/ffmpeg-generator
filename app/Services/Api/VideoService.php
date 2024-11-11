@@ -70,11 +70,86 @@ class VideoService
         $fadeOutDuration = 0.5; // Duration of fade-out effect in seconds
         $fadeOutStart = $endTime - $fadeOutDuration;
 
-        // Construct the drawtext filter
+        // Normal Text effect
         $drawtext = "drawtext=text='$escapedText':fontfile=$fontPath:fontsize=$size:fontcolor=$color:x=$x:y=$y:";
         $drawtext .= "enable='between(t,$startTime,$endTime)':";
         $drawtext .= "alpha='if(lt(t,$startTime),0,if(lt(t,$startTime+$fadeInDuration),(t-$startTime)/$fadeInDuration,";
         $drawtext .= "if(gt(t,$fadeOutStart),($endTime-t)/$fadeOutDuration,1)))'";
+
+        // Bouncing text effect
+        // Bouncing effect parameters
+        // $bounceHeight = 20; // Maximum pixels to move up and down
+        // $bouncePeriod = 2; // Time for one complete bounce cycle in seconds
+
+        // $drawtext = "drawtext=text='$escapedText':fontfile=$fontPath:fontsize=$size:fontcolor=$color:";
+        // $drawtext .= "x=$x:";
+        // $drawtext .= "y='$y+$bounceHeight*sin((t-$startTime)*2*PI/$bouncePeriod)':";
+        // $drawtext .= "enable='between(t,$startTime,$endTime)':";
+        // $drawtext .= "alpha='if(lt(t,$startTime),0,if(lt(t,$startTime+$fadeInDuration),(t-$startTime)/$fadeInDuration,";
+        // $drawtext .= "if(gt(t,$fadeOutStart),($endTime-t)/$fadeOutDuration,1)))'";
+
+        // Wave effect
+        // Wave effect parameters
+        // $waveHeight = 10; // Maximum pixels to move up and down
+        // $wavePeriod = 2; // Time for one complete wave cycle in seconds
+        // $waveCharOffset = 0.3; // Offset between characters in the wave (reduced for smoother wave)
+        // $charSpacing = 1.0; // Adjust this value to change horizontal spacing between characters
+
+        // // Line spacing
+        // $lineHeight = $size * 1.5; // Adjust this value to change line spacing
+
+        // // Split text into lines
+        // $lines = explode("\n", $text);
+
+        // // Construct the drawtext filter with wave effect for each line
+        // $drawtext = "";
+        // foreach ($lines as $lineIndex => $line) {
+        //     $lineY = $y + $lineIndex * $lineHeight;
+        //     $lineX = $x; // Reset X position for each new line
+
+        //     for ($i = 0; $i < mb_strlen($line); $i++) {
+        //         $char = mb_substr($line, $i, 1);
+        //         $escapedChar = $this->escapeString($char);
+
+        //         // Calculate X position with increased spacing
+        //         $charX = "$lineX+{$i}*{$size}*$charSpacing";
+
+        //         $drawtext .= "drawtext=text='$escapedChar':fontfile=$fontPath:fontsize=$size:fontcolor=$color:";
+        //         $drawtext .= "x=$charX:";
+        //         $drawtext .= "y='$lineY+$waveHeight*sin((t-$startTime)*2*PI/$wavePeriod+$i*$waveCharOffset)':";
+        //         $drawtext .= "enable='between(t,$startTime,$endTime)':";
+        //         $drawtext .= "alpha='if(lt(t,$startTime),0,if(lt(t,$startTime+$fadeInDuration),(t-$startTime)/$fadeInDuration,";
+        //         $drawtext .= "if(gt(t,$fadeOutStart),($endTime-t)/$fadeOutDuration,1)))',";
+        //     }
+        // }
+        // $drawtext = rtrim($drawtext, ',');
+
+        // Slide effect
+        // Effect parameters
+        // $slideDuration = 0.5; // Duration of sliding effect in seconds
+        // $lineHeight = $size * 1.5; // Adjust this value to change line spacing
+
+        // // Split text into lines
+        // $lines = explode("\n", $text);
+
+        // // Construct the complex filter
+        // $complex_filter = "";
+        // foreach ($lines as $lineIndex => $line) {
+        //     $lineY = $y + $lineIndex * $lineHeight;
+        //     $lineStart = $start + $lineIndex * 0.1; // Stagger start time for each line
+        //     $slideEnd = $lineStart + $slideDuration;
+
+        //     $escapedLine = $this->escapeString($line);
+
+        //     // Sliding effect
+        //     $complex_filter .= "drawtext=fontfile=$fontPath:fontsize=$size:fontcolor=$color:";
+        //     $complex_filter .= "text='$escapedLine':";
+        //     $complex_filter .= "x='if(gte(t,$lineStart),max($x,w-tw-((t-$lineStart)/$slideDuration)*(w-$x)),w)':";
+        //     $complex_filter .= "y=$lineY:";
+        //     $complex_filter .= "enable='between(t,$lineStart,$end)',";
+        // }
+        // $complex_filter = rtrim($complex_filter, ',');
+        // $drawtext = $complex_filter;
 
         // Construct the FFmpeg command using the temporary output path
         $command = "ffmpeg -y -i $inputPath -vf \"$drawtext\" -codec:a copy $tempOutputPath";
