@@ -124,8 +124,16 @@ class BirthDayUserResource extends Resource
                     ->label('動画作成')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(function (TextColumn $column) {
-                        return $column->getState() ? 'Yes' : 'No';
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 0) {
+                            return 'No';
+                        } elseif ($state === 1) {
+                            return 'Pending';
+                        } elseif ($state === 2) {
+                            return 'Done';
+                        } else {
+                            return 'No';
+                        }
                     }),
                 TextColumn::make('video_url')
                     ->label('動画 URL')

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('join_date');
             $table->date('birthday');
             $table->boolean('is_wish_sent')->default(false);
-            $table->boolean('is_video_generated')->default(false);
+            $table->tinyInteger('is_video_generated')->default(0);
             $table->text('video_url')->nullable();
             $table->timestamps();
         });

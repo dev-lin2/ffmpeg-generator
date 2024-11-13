@@ -212,7 +212,7 @@ class VideoService
             ]);
             $user = BirthdayUser::where('employee_id', $this->employeeId)->first();
             $user->video_url = "https://testlab.cfd/videos/{$user->employee_id}.mp4";
-            $user->is_video_generated = true;
+            $user->is_video_generated = 2;
             $user->save();
         }
 

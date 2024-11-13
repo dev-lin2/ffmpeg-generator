@@ -31,9 +31,21 @@ class AdminVideoService
         $text3 = $data['wish_text_c'];
 
         foreach ($userIds as $userId) {
+            
             $log = new BirthdayVideoRecord();
             
             $user = BirthdayUser::find($userId);
+
+            // Generate random string with 50 characters using employee_id
+            $uniqid = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 50)), 0, 50);
+
+            // Mix uniqid with employee_id and generate a new employee_id
+            $employeeId = $user->employee_id . $uniqid;
+
+            // Save the new employee_id to uniqid
+            $user->update([
+                'uniqid' => $employeeId,
+            ]);
 
             // Reset video generation status
             $user->update([
@@ -58,14 +70,14 @@ class AdminVideoService
 
             $font = public_path('NOTOSANS_SEMI.ttf');
 
-            $this->videoService->setOutputPath($user->employee_id);
+            $this->videoService->setOutputPath($user->uniqid);
 
-            $baseVideoPath = public_path("videos/{$user->employee_id}.mp4");
+            $baseVideoPath = public_path("videos/{$user->uniqid}.mp4");
 
             $jobs = [
-                new ProcessVideo($user->employee_id, $wishes[0], 2, 10, [650, 250], $font, 40, 'black', 0.03, null, false),
-                new ProcessVideo($user->employee_id, $wishes[1], 11, 19, [900, 250], $font, 40, 'black', 0.03, $baseVideoPath, false),
-                new ProcessVideo($user->employee_id, $wishes[2], 21, 30, [1000, 250], $font, 40, 'black', 0.03, $baseVideoPath, true)
+                new ProcessVideo($user->uniqid, $wishes[0], 2, 10, [650, 250], $font, 40, 'black', 0.03, null, false),
+                new ProcessVideo($user->uniqid, $wishes[1], 11, 19, [900, 250], $font, 40, 'black', 0.03, $baseVideoPath, false),
+                new ProcessVideo($user->uniqid, $wishes[2], 21, 30, [1000, 250], $font, 40, 'black', 0.03, $baseVideoPath, true)
             ];
 
             Bus::chain($jobs)->dispatch();
@@ -76,6 +88,9 @@ class AdminVideoService
                 'wish_text_2' => $wishes[1],
                 'wish_text_3' => $wishes[2],
             ]);
+
+            $user->is_video_generated = 1;
+            $user->save();
         }
 
         return [
@@ -89,7 +104,7 @@ class AdminVideoService
         $thumbnailUrl = url('bd.png');
 
         foreach ($data as $user) {
-            $videoUrl = url("videos/{$user->employee_id}.mp4");
+            $videoUrl = url("videos/{$user->uniqid}.mp4");
 
             $this->lineWorkService->sendVideo($user->email, $videoUrl, $thumbnailUrl);
 

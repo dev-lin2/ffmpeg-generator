@@ -15,6 +15,7 @@ class BirthdayUser extends Model
         'last_name',
         'email',
         'employee_id',
+        'uniqid',
         'join_date',
         'birthday',
         'is_wish_sent',
