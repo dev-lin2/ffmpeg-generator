@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('birthday_users', function (Blueprint $table) {
             // add uniqid which is unique for each user , 50 characters long
-            $table->string('uniqid', 50)->unique()->after('employee_id');
+            $table->string('uniqid', 50)->after('employee_id');
         });
     }
 
