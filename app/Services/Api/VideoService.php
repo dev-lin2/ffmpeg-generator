@@ -210,8 +210,8 @@ class VideoService
             Log::info("Setting user's video path and is_video_generated flag", [
                 'employeeId' => $this->employeeId
             ]);
-            $user = BirthdayUser::where('employee_id', $this->employeeId)->first();
-            $user->video_url = "https://testlab.cfd/videos/{$user->employee_id}.mp4";
+            $user = BirthdayUser::where('uniqid', $this->employeeId)->first();
+            $user->video_url = "https://testlab.cfd/videos/{$user->uniqid}.mp4";
             $user->is_video_generated = 2;
             $user->save();
         }
