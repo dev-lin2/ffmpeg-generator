@@ -32,11 +32,11 @@ class BirthDayUserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static ?string $label = 'お誕生日方一覧';
+    public static ?string $label = 'お誕生日一覧';
 
     public static function getPluralLabel(): ?string
     {
-        return 'お誕生日方一覧';
+        return 'お誕生日一覧';
     }
 
     public static function form(Form $form): Form
@@ -254,7 +254,7 @@ class BirthDayUserResource extends Resource
                                 ->success()
                                 ->send();
                         })
-                ]),
+                ])->label('一括操作')
             ]);
     }
 
