@@ -146,16 +146,16 @@ class BirthDayUserResource extends Resource
                 SelectFilter::make('birthday')
                     ->label('誕生日')
                     ->options([
-                        'all' => '全て',
                         'today' => '今日',
                         'this_week' => '今週',
                         'next_week' => '来週',
                         'this_month' => '今月',
                     ])
+                    ->placeholder('全て')
                     ->query(function (Builder $query, array $data) {
                         $value = $data['value'] ?? null;
 
-                        if ($value === 'all' || $value === null) {
+                        if ($value === null) {
                             return $query;
                         }
 
