@@ -16,4 +16,18 @@ class EditWishText extends EditRecord
             // Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Actions\Action::make('cancel')
+                ->label('キャンセル')
+                ->action(fn () => $this->redirect($this->getResource()::getUrl('index')))
+                ->color('danger'),
+            Actions\Action::make('save')
+                ->label('変更')
+                ->action('save')
+                ->color('primary'),
+        ];
+    }
 }

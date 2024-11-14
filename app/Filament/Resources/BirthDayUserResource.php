@@ -128,9 +128,9 @@ class BirthDayUserResource extends Resource
                         if ($state === 0) {
                             return 'No';
                         } elseif ($state === 1) {
-                            return 'Pending';
+                            return '作成中';
                         } elseif ($state === 2) {
-                            return 'Done';
+                            return '作成済み';
                         } else {
                             return 'No';
                         }
@@ -144,17 +144,18 @@ class BirthDayUserResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('birthday')
-                    ->label('Birthday Period')
+                    ->label('誕生日')
                     ->options([
-                        'today' => 'Today',
-                        'this_week' => 'This Week',
-                        'next_week' => 'Next Week',
-                        'this_month' => 'This Month',
+                        'all' => '全て',
+                        'today' => '今日',
+                        'this_week' => '今週',
+                        'next_week' => '来週',
+                        'this_month' => '今月',
                     ])
                     ->query(function (Builder $query, array $data) {
                         $value = $data['value'] ?? null;
 
-                        if ($value === null) {
+                        if ($value === 'all' || $value === null) {
                             return $query;
                         }
 
