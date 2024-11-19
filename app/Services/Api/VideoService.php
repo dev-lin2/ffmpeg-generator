@@ -219,6 +219,64 @@ class VideoService
         return ['status' => 200, 'message' => 'Text added to video successfully', 'output_path' => $outputPath];
     }
 
+    public function convertVideoToGIF($videoPath, $user)
+    {
+        Log::info("Starting video to GIF conversion", [
+            'employeeId' => $user->uniqid,
+            'videoPath' => $videoPath
+        ]);
+
+        $inputPath = $videoPath;
+        $outputPath = public_path("videos/{$user->uniqid}.gif");
+
+        // Construct the FFmpeg command
+        $command = "ffmpeg -y -i $inputPath -vf \"fps=30,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse=dither=floyd_steinberg\" -loop 0 $outputPath";
+
+        Log::info("Executing FFmpeg command", [
+            'employeeId' => $user->uniqid,
+            'command' => $command
+        ]);
+
+        exec($command . " 2>&1", $output, $status);
+
+        Log::info("FFmpeg command output", [
+            'employeeId' => $user->uniqid,
+            'output' => $output,
+            'status' => $status
+        ]);
+
+        if ($status !== 0) {
+            Log::error("Failed to convert video to GIF", [
+                'employeeId' => $user->uniqid,
+                'status' => $status,
+                'output' => $output,
+                'command' => $command,
+                'inputPath' => $inputPath,
+                'outputPath' => $outputPath
+            ]);
+            return ['status' => 500, 'message' => 'Failed to convert video to GIF', 'error' => implode("\n", $output)];
+        }
+
+        if (!file_exists($outputPath)) {
+            Log::error("GIF file was not created", [
+                'employeeId' => $user->uniqid,
+                'outputPath' => $outputPath
+            ]);
+            return ['status' => 500, 'message' => 'GIF file was not created', 'outputPath' => $outputPath];
+        }
+
+        Log::info("Video to GIF conversion completed successfully", [
+            'employeeId' => $user->uniqid,
+            'outputPath' => $outputPath
+        ]);
+
+        // Update user's video URL
+        $user->video_url = "https://testlab.cfd/videos/{$user->uniqid}.gif";
+        $user->save();
+
+        return ['status' => 200, 'message' => 'Video converted to GIF successfully', 'output_path' => $outputPath];
+    }
+
     protected function escapeString($string)
     {
         $string = str_replace('\\', '\\\\', $string);
