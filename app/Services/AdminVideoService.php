@@ -10,6 +10,7 @@ use App\Services\Api\VideoService;
 use Carbon\Carbon;
 use App\Jobs\ProcessVideo;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 
 class AdminVideoService
 {
@@ -31,9 +32,9 @@ class AdminVideoService
         $text2 = $data['wish_text_b'];
         $text3 = $data['wish_text_c'];
 
-        foreach ($userIds as $userId) {            
+        foreach ($userIds as $userId) {
             $log = new BirthdayVideoRecord();
-            
+
             $user = BirthdayUser::find($userId);
 
             // Delete old video and gif, check video and gif exist first
@@ -46,7 +47,7 @@ class AdminVideoService
 
             if (file_exists($gif)) {
                 unlink($gif);
-            }            
+            }
 
             // Generate random string with 50 characters using employee_id
             $uniqid = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 50)), 0, 50);
@@ -124,6 +125,28 @@ class AdminVideoService
             $user->update([
                 'is_wish_sent' => true,
             ]);
+        }
+    }
+
+    public function sendGif($data)
+    {
+        foreach ($data as $user) {
+            $gifFilePath = public_path("videos/{$user->uniqid}.gif");
+
+            if (file_exists($gifFilePath)) {
+                $result = $this->lineWorkService->sendGif($user->email, $gifFilePath);
+
+                if ($result) {
+                    $user->update([
+                        'is_wish_sent' => true,
+                    ]);
+                    Log::info("GIF sent successfully to user: {$user->email}");
+                } else {
+                    Log::error("Failed to send GIF to user: {$user->email}");
+                }
+            } else {
+                Log::warning("GIF file not found for user: {$user->email}");
+            }
         }
     }
 }

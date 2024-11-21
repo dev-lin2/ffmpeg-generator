@@ -138,4 +138,79 @@ class LineWorkService
 
         return $tokenData['access_token'];
     }
+
+    public function sendGif($userId, $gifFilePath)
+    {
+        $uploadResponse = $this->uploadAttachment($gifFilePath);
+        if (!$uploadResponse || !isset($uploadResponse->uploadUrl)) {
+            Log::error("Failed to get upload URL for GIF");
+            return false;
+        }
+
+        $fileId = $this->uploadFile($uploadResponse->uploadUrl, $gifFilePath);
+        if (!$fileId) {
+            Log::error("Failed to upload GIF file");
+            return false;
+        }
+
+        return $this->sendGifMessage($userId, $fileId);
+    }
+
+    private function uploadAttachment($filePath)
+    {
+        $accessToken = $this->getStoredAccessToken();
+
+        $client = new Client();
+        $response = $client->post("https://www.worksapis.com/v1.0/bots/{$this->botNo}/attachments", [
+            'headers' => [
+                "Authorization" => "Bearer {$accessToken}",
+                "Content-Type" => "application/json; charset=utf-8",
+                "consumerKey" => $this->consumerKey,
+            ],
+            'json' => [
+                "fileName" => basename($filePath),
+            ],
+        ]);
+
+        return json_decode($response->getBody());
+    }
+
+    private function uploadFile($uploadUrl, $filePath)
+    {
+        $client = new Client();
+        $response = $client->post($uploadUrl, [
+            'multipart' => [
+                [
+                    'name'     => 'Filedata',
+                    'contents' => fopen($filePath, 'r'),
+                    'filename' => basename($filePath),
+                ],
+            ],
+        ]);
+
+        $result = json_decode($response->getBody());
+        return $result->fileId ?? null;
+    }
+
+    private function sendGifMessage($userId, $fileId)
+    {
+        $accessToken = $this->getStoredAccessToken();
+
+        $client = new Client();
+        $response = $client->post("https://www.worksapis.com/v1.0/bots/{$this->botNo}/users/{$userId}/messages", [
+            'headers' => [
+                "Authorization" => "Bearer {$accessToken}",
+                "Content-Type" => "application/json; charset=utf-8",
+                "consumerKey" => $this->consumerKey,
+            ],
+            'json' => [
+                "content" => [
+                    "type" => "image",
+                    "fileId" => $fileId
+                ]
+            ],
+        ]);
+
+        return $response->getStatusCode();
+    }
 }
