@@ -177,15 +177,24 @@ class LineWorkService
 
     private function uploadFile($uploadUrl, $filePath)
     {
+        $accessToken = $this->getStoredAccessToken();
         $client = new Client();
-        $response = $client->post($uploadUrl, [
+        
+        // Send the POST request with Guzzle
+        $response = $client->request('POST', $uploadUrl, [
+            'headers' =>  [
+                "Authorization" => "Bearer {$accessToken}",
+            ],
             'multipart' => [
                 [
-                    'name'     => 'Filedata',
-                    'contents' => fopen($filePath, 'r'),
-                    'filename' => basename($filePath),
-                ],
-            ],
+                    'name'     => 'Filedata', // The name of the field in the form
+                    'contents' => fopen($filePath, 'r'), // Open the file for upload
+                    'filename' => basename($filePath), // The file's name
+                    'headers'  => [
+                        'Content-Type' => 'image/gif', // The type of the file being uploaded
+                    ]
+                ]
+            ]
         ]);
 
         $result = json_decode($response->getBody());
