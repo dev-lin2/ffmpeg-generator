@@ -130,12 +130,13 @@ class AdminVideoService
 
     public function sendGif($data)
     {
+        
         foreach ($data as $user) {
             $gifFilePath = public_path("videos/{$user->uniqid}.gif");
+            //$gifFilePath = public_path("videos/gif.gif");
 
             if (file_exists($gifFilePath)) {
                 $result = $this->lineWorkService->sendGif($user->email, $gifFilePath);
-
                 if ($result) {
                     $user->update([
                         'is_wish_sent' => true,
