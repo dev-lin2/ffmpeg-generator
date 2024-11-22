@@ -230,7 +230,7 @@ class VideoService
         $outputPath = public_path("videos/{$user->uniqid}.gif");
 
         // Construct the FFmpeg command
-        $command = "ffmpeg -y -i $inputPath -vf \"fps=30,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse=dither=floyd_steinberg\" -loop 0 $outputPath";
+        $command = "ffmpeg -y -i $inputPath -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse=dither=floyd_steinberg\" -loop 0 $outputPath";
 
         Log::info("Executing FFmpeg command", [
             'employeeId' => $user->uniqid,
