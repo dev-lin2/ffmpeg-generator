@@ -256,6 +256,7 @@ class BirthDayUserResource extends Resource
                         ->requiresConfirmation(false)
                         ->action(function (Collection $records) {
                             $adminService = app(AdminVideoService::class);
+                            $adminService->sendVideo($records);
                             $adminService->sendGif($records);
 
                             Notification::make()
